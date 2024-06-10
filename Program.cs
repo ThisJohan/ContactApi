@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -14,6 +15,14 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ContactContext>(opt => opt.UseNpgsql("Host=flora.db.elephantsql.com;Database=cemqheoq;Username=cemqheoq;Password=s5BxT22mHydUREBvKDL6GGb9qn01c-Sp"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:4200");
+                      });
+});
 // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
 //         options => builder.Configuration.Bind("JwtSettings", options));
@@ -53,6 +62,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 

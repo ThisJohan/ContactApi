@@ -52,8 +52,8 @@ namespace ContactApi.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register(UserRegisterDto userDto)
         {
-            var role = HttpContext.User.FindFirstValue("role");
-            if (role != "admin")
+            var userId = HttpContext.User.FindFirstValue("userRole");
+            if (userId != "admin")
             {
                 return BadRequest("Only admin can register new users");
             }
@@ -129,7 +129,7 @@ namespace ContactApi.Controllers
             var claims = new[]
             {
                 new Claim("userId", user.Id.ToString()!),
-                new Claim("role", user.Role!),
+                new Claim("userRole", user.Role!),
             };
 
             var Sectoken = new JwtSecurityToken(expires: expires, signingCredentials: credentials, audience: "jwt_issuer", issuer: "jwt_issuer", claims: claims);
